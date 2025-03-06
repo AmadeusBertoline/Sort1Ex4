@@ -2,83 +2,48 @@ package merge.fatec.berto;
 
 import java.util.Arrays;
 
-import java.util.Scanner;
-import java.util.Arrays;
-
 public class MergeSort {
-	public static void mergeSort(int[] array, int esquerda, int direita) {
-		if (esquerda < direita) {
-			int meio = (esquerda + direita) / 2;
 
-			// Divide o array recursivamente
-			mergeSort(array, esquerda, meio);
-			mergeSort(array, meio + 1, direita);
+	public static int[] mergeSort(int[] array) {
+		if (array.length <= 1)
+			return array;
 
-			// Mescla as partes ordenadas
-			merge(array, esquerda, meio, direita);
+		int meio = array.length / 2;
+		int[] esquerda = new int[meio];
+		int[] direita = new int[array.length - meio];
+
+		// Preenche os arrays esquerdo e direito manualmente
+		for (int i = 0; i < meio; i++) {
+			esquerda[i] = array[i];
 		}
+		for (int i = meio; i < array.length; i++) {
+			direita[i - meio] = array[i];
+		}
+
+		// Chama recursivamente e faz o merge
+		return merge(mergeSort(esquerda), mergeSort(direita));
 	}
 
-	private static void merge(int[] array, int esquerda, int meio, int direita) {
-		// Tamanho das sublistas
-		int n1 = meio - esquerda + 1;
-		int n2 = direita - meio;
+	private static int[] merge(int[] esquerda, int[] direita) {
+		int[] resultado = new int[esquerda.length + direita.length];
+		int i = 0, j = 0, k = 0;
 
-		// Arrays temporários para armazenar as sublistas
-		int[] esquerdaArray = new int[n1];
-		int[] direitaArray = new int[n2];
-
-		// Copia os elementos para os arrays temporários
-		for (int i = 0; i < n1; i++) {
-			esquerdaArray[i] = array[esquerda + i];
-		}
-		for (int j = 0; j < n2; j++) {
-			direitaArray[j] = array[meio + 1 + j];
+		while (i < esquerda.length && j < direita.length) {
+			resultado[k++] = (esquerda[i] <= direita[j]) ? esquerda[i++] : direita[j++];
 		}
 
-		// Mescla os dois arrays temporários
-		int i = 0, j = 0, k = esquerda;
-		while (i < n1 && j < n2) {
-			if (esquerdaArray[i] <= direitaArray[j]) {
-				array[k] = esquerdaArray[i];
-				i++;
-			} else {
-				array[k] = direitaArray[j];
-				j++;
-			}
-			k++;
-		}
+		while (i < esquerda.length)
+			resultado[k++] = esquerda[i++];
+		while (j < direita.length)
+			resultado[k++] = direita[j++];
 
-		// Copia os elementos restantes, se houver
-		while (i < n1) {
-			array[k] = esquerdaArray[i];
-			i++;
-			k++;
-		}
-		while (j < n2) {
-			array[k] = direitaArray[j];
-			j++;
-			k++;
-		}
+		return resultado;
 	}
 
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
-		System.out.println("Digite o tamanho do array:");
-		int tamanho = scanner.nextInt();
+		int[] array = { 38, 27, 43, 3, 9, 82, 10 };
+		int[] ordenado = mergeSort(array);
 
-		int[] array = new int[tamanho];
-
-		System.out.println("Digite os elementos do array:");
-		for (int i = 0; i < tamanho; i++) {
-			array[i] = scanner.nextInt();
-		}
-
-		mergeSort(array, 0, array.length - 1);
-
-		System.out.println("Array ordenado:");
-		System.out.println(Arrays.toString(array));
+		System.out.println("Array ordenado: " + Arrays.toString(ordenado));
 	}
 }
-
-//vetor, auxiliar.
